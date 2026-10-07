@@ -134,6 +134,7 @@ Use normalized relational tables, UUID primary keys, explicit foreign keys and c
 - Phase 1 architecture baseline: completed.
 - Database schema + RLS: implemented.
 - Auth profile bootstrap + protected audit triggers: implemented.
+- Workflow state transition enforcement + restricted assigned-user updates: implemented.
 - Security Advisor: 0 lints.
 - Real user data: none.
 - Production document data: none.
