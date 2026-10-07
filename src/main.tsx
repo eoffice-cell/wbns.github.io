@@ -18,7 +18,7 @@ function App() {
   const [roles, setRoles] = useState<string[]>([]);
 
   useEffect(() => {
-    getCurrentUser().then(({ user }) => { setUser(user); if (user) void getMyRoles(user.id).then(setRoles).catch(() => setRoles([])); setLoading(false); });
+    getCurrentUser().then(({ user }) => { setUser(user); setLoading(false); });
     const { data } = supabase.auth.onAuthStateChange((_event, session) => setUser(session?.user ?? null));
     return () => data.subscription.unsubscribe();
   }, []);
