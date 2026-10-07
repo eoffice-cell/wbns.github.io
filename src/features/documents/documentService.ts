@@ -58,3 +58,89 @@ export async function createDocument(form: DocumentForm, userId: string) {
   if (error) throw error;
   return data as Document;
 }
+
+
+export async function listActiveProfiles() {
+  const { data, error } = await supabase
+    .from("profiles")
+    .select("id, full_name, position_title, email, is_active")
+    .eq("is_active", true)
+    .order("full_name", { ascending: true });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function getMyRoles(userId: string) {
+  const { data, error } = await supabase
+    .from("user_roles")
+    .select("role")
+    .eq("user_id", userId);
+  if (error) throw error;
+  return (data ?? []).map((row) => row.role);
+}
+
+export async function listWorkflow(documentId: string) {
+  const { data, error } = await supabase
+    .from("document_workflow")
+    .select("*")
+    .eq("document_id", documentId)
+    .order("action_at", { ascending: false });
+  if (error) throw error;
+  return data ?? [];
+}
+
+export async function assignDocument(
+  documentId: string,
+  assignedTo: string,
+  assignedBy: string,
+  deadlineAt: string | null,
+  notes: string | null,
+) {
+  const { error: assignmentError } = await supabase.from("document_assignments").insert({
+    document_id: documentId,
+    assigned_to: assignedTo,
+    assigned_by: assignedBy,
+    deadline_at: deadlineAt,
+    notes,
+  });
+  if (assignmentError) throw assignmentError;
+
+  const { error } = await supabase
+    .from("documents")
+    .update({
+      assigned_to: assignedTo,
+      assigned_at: new Date().toISOString(),
+      deadline_at: deadlineAt,
+      status: "assigned",
+    })
+    .eq("id", documentId);
+  if (error) throw error;
+}
+
+export async function transitionDocument(
+  documentId: string,
+  toStatus: Database["public"]["Enums"]["document_status"],
+) {
+  const { error } = await supabase
+    .from("documents")
+    .update({ status: toStatus })
+    .eq("id", documentId);
+  if (error) throw error;
+}
+
+export async function approveDocument(
+  documentId: string,
+  approverId: string,
+  decision: "approved" | "rejected",
+  comment: string,
+) {
+  const { error: approvalError } = await supabase.from("document_approvals").insert({
+    document_id: documentId,
+    approver_id: approverId,
+    decision,
+    comment: comment.trim() || null,
+  });
+  if (approvalError) throw approvalError;
+
+  await transitionDocument(documentId, decision === "approved" ? "approved" : "in_progress");
+}
