@@ -1,22 +1,2 @@
-import { StrictMode } from "react";
-import { createRoot } from "react-dom/client";
-import "./styles.css";
-
-function App() {
-  return (
-    <main className="shell">
-      <section className="card">
-        <p className="eyebrow">WBNS E-OFFICE</p>
-        <h1>ระบบสารบรรณอิเล็กทรอนิกส์</h1>
-        <p>โรงเรียนวัดบึงน้ำใส</p>
-        <p className="muted">ฐานระบบเริ่มต้นพร้อม Supabase Auth, RLS และโครงสร้างงานสารบรรณ</p>
-      </section>
-    </main>
-  );
-}
-
-createRoot(document.getElementById("root")!).render(
-  <StrictMode>
-    <App />
-  </StrictMode>,
-);
+import { StrictMode,useEffect,useState } from "react"; import { createRoot } from "react-dom/client"; import { supabase } from "./lib/supabase"; import { getCurrentUser } from "./lib/auth"; import { LoginPage } from "./features/auth/LoginPage"; import { DashboardPage } from "./features/dashboard/DashboardPage"; import "./styles.css";
+function App(){const[loading,setLoading]=useState(true);const[user,setUser]=useState<any>(null);useEffect(()=>{getCurrentUser().then(({user})=>{setUser(user);setLoading(false)});const{data}=supabase.auth.onAuthStateChange((_e,s)=>setUser(s?.user??null));return()=>data.subscription.unsubscribe()},[]);if(loading)return <main className="auth-shell"><p>กำลังตรวจสอบการเข้าสู่ระบบ…</p></main>;return user?<DashboardPage onLogout={()=>setUser(null)}/>:<LoginPage onSignedIn={()=>getCurrentUser().then(({user})=>setUser(user))}/>};createRoot(document.getElementById("root")!).render(<StrictMode><App/></StrictMode>);
