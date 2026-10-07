@@ -173,6 +173,30 @@ export type Database = {
           },
         ]
       }
+      document_number_counters: {
+        Row: {
+          buddhist_year: number
+          direction: Database["public"]["Enums"]["document_direction"]
+          last_sequence: number
+          number_prefix: string
+          updated_at: string
+        }
+        Insert: {
+          buddhist_year: number
+          direction: Database["public"]["Enums"]["document_direction"]
+          last_sequence?: number
+          number_prefix?: string
+          updated_at?: string
+        }
+        Update: {
+          buddhist_year?: number
+          direction?: Database["public"]["Enums"]["document_direction"]
+          last_sequence?: number
+          number_prefix?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       document_workflow: {
         Row: {
           action_at: string
@@ -232,6 +256,8 @@ export type Database = {
           drive_web_url: string | null
           id: string
           notes: string | null
+          number_buddhist_year: number | null
+          number_sequence: number | null
           received_date: string | null
           registration_number: string | null
           sender_agency: string | null
@@ -254,6 +280,8 @@ export type Database = {
           drive_web_url?: string | null
           id?: string
           notes?: string | null
+          number_buddhist_year?: number | null
+          number_sequence?: number | null
           received_date?: string | null
           registration_number?: string | null
           sender_agency?: string | null
@@ -276,6 +304,8 @@ export type Database = {
           drive_web_url?: string | null
           id?: string
           notes?: string | null
+          number_buddhist_year?: number | null
+          number_sequence?: number | null
           received_date?: string | null
           registration_number?: string | null
           sender_agency?: string | null
