@@ -8,6 +8,7 @@ import { DocumentsPage } from "./features/documents/DocumentsPage";
 import { NotificationCenter } from "./features/notifications/NotificationCenter";
 import { AdminPage } from "./features/admin/AdminPage";
 import { AuditLogPage } from "./features/admin/AuditLogPage";
+import { PushSettings } from "./features/notifications/PushSettings";
 import { getMyRoles } from "./features/documents/documentService";
 import "./styles.css";
 
@@ -39,7 +40,7 @@ function App() {
     </nav>
     {page === "dashboard" && <DashboardPage onLogout={() => setUser(null)} />}
     {page === "documents" && <main className="app-shell"><DocumentsPage userId={user.id}/></main>}
-    {page === "notifications" && <main className="app-shell"><NotificationCenter userId={user.id}/></main>}
+    {page === "notifications" && <main className="app-shell"><NotificationCenter userId={user.id}/><PushSettings /></main>}
     {page === "admin" && canAdmin && <main className="app-shell"><AdminPage /></main>}
     {page === "audit" && canAdmin && <main className="app-shell"><AuditLogPage /></main>}
   </div>;
