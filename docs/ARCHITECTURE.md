@@ -3,7 +3,7 @@
 ## Phase 1 — Architecture Baseline
 
 ### Infrastructure
-- GitHub: e-office-cell/wbns.github.io
+- GitHub: eoffice-cell/wbns.github.io
 - Supabase project: wbns-eoffice
 - Supabase ref: flpdlkqgfxxeviilkacw
 - PostgreSQL: Supabase PostgreSQL 17
@@ -21,6 +21,7 @@
 5. Audit logging is append-oriented and protected from ordinary user updates.
 6. Google Drive access is scoped to the school's configured Drive resources.
 7. No cross-school data or credentials.
+8. Authorization data is stored in database role tables, not user-editable metadata.
 
 ### Roles
 - system_admin
@@ -71,6 +72,40 @@
 Director and Deputy Director: important system/workflow events.
 Teacher and Staff: assigned tasks and approaching deadlines only.
 
+### Database baseline
+Implemented in the school-owned Supabase project:
+- profiles
+- user_roles
+- permissions
+- role_permissions
+- departments
+- documents
+- document_assignments
+- document_workflow
+- document_approvals
+- notifications
+- push_subscriptions
+- audit_logs
+- private authorization helpers
+
+Implemented database protections:
+- UUID primary keys
+- foreign keys and indexes
+- check constraints
+- RLS policies
+- private-schema role helpers
+- protected audit log insertion through database triggers
+- Auth user -> profile bootstrap trigger
+- updated_at triggers
+- migrations for reproducible installation
+
+Current security advisor status: 0 security lints.
+
+Important provisioning rule:
+- No real school user account or privileged role has been created yet.
+- The Auth trigger creates a profile for a newly created Auth user but does not assign any application role.
+- The first System Admin / School Admin account must be provisioned only from a school-authorized identity.
+
 ### Database design direction
 Use normalized relational tables, UUID primary keys, explicit foreign keys and check constraints, indexed foreign keys and common search/filter columns. Avoid storing document binaries in PostgreSQL.
 
@@ -92,5 +127,15 @@ Use normalized relational tables, UUID primary keys, explicit foreign keys and c
 - Google Cloud project ownership/configuration is not yet verified.
 - OAuth credentials are not provisioned/verified.
 - VAPID credentials are not provisioned/verified.
+- Exact school numbering policy for registration/document numbers still needs confirmation before enforcing automatic numbering.
 
-No production schema or user data is created by this architecture document.
+### Current implementation status
+- Phase 0 discovery: completed.
+- Phase 1 architecture baseline: completed.
+- Database schema + RLS: implemented.
+- Auth profile bootstrap + protected audit triggers: implemented.
+- Security Advisor: 0 lints.
+- Real user data: none.
+- Production document data: none.
+
+No cross-school infrastructure, credentials, accounts, or document data are used.
