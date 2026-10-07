@@ -27,7 +27,7 @@ function App() {
   if (!user) return <LoginPage onSignedIn={() => getCurrentUser().then(({ user }) => setUser(user))}/>;
   const canAdmin = roles.some((role) => ["system_admin", "school_admin"].includes(role));
 
-  if (roles.length === 0) void getMyRoles(user.id).then(setRoles).catch(() => setRoles([]));
+  useEffect(() => { if (user) void getMyRoles(user.id).then(setRoles).catch(() => setRoles([])); }, [user]);
 
   return <div>
     <nav className="main-nav">
