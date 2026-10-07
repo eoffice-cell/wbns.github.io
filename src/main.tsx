@@ -23,11 +23,11 @@ function App() {
     return () => data.subscription.unsubscribe();
   }, []);
 
+  useEffect(() => { if (user) void getMyRoles(user.id).then(setRoles).catch(() => setRoles([])); else setRoles([]); }, [user]);
+
   if (loading) return <main className="auth-shell"><p>กำลังตรวจสอบการเข้าสู่ระบบ…</p></main>;
   if (!user) return <LoginPage onSignedIn={() => getCurrentUser().then(({ user }) => setUser(user))}/>;
   const canAdmin = roles.some((role) => ["system_admin", "school_admin"].includes(role));
-
-  useEffect(() => { if (user) void getMyRoles(user.id).then(setRoles).catch(() => setRoles([])); }, [user]);
 
   return <div>
     <nav className="main-nav">
