@@ -135,6 +135,7 @@ Use normalized relational tables, UUID primary keys, explicit foreign keys and c
 - Database schema + RLS: implemented.
 - Auth profile bootstrap + protected audit triggers: implemented.
 - Workflow state transition enforcement + restricted assigned-user updates: implemented.
+- Role-management hardening: school_admin cannot grant system_admin; permission catalog and role-permission mappings are system_admin-only.
 - Security Advisor: 0 lints.
 - Real user data: none.
 - Production document data: none.
